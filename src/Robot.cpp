@@ -14,6 +14,7 @@ class Robot : public SampleRobot {
 private:
 	Joystick rJoy;
 	Joystick lJoy;
+	Joystick liftJoy;
 
 	Talon frMotor;
 	Talon flMotor;
@@ -36,9 +37,14 @@ private:
 	RobotDrive rawDrive;
 	bool useEncoders;
 
+	Talon lift;
+	Solenoid claw;
+	Talon scythe;
+
 public:
 	Robot(): rJoy(RIGHT_JOYSTICK),
 			 lJoy(LEFT_JOYSTICK),
+			 liftJoy(LIFT_JOYSTICK),
 			 frMotor(FR_DRIVE_TALON),
 			 flMotor(FL_DRIVE_TALON),
 			 brMotor(BR_DRIVE_TALON),
@@ -57,7 +63,10 @@ public:
 			 clockwise(0.0),
 			 scalar(1.0),
 			 rawDrive(flMotor, blMotor, frMotor, brMotor),
-			 useEncoders(true)
+			 useEncoders(true),
+			 lift(LIFT_TALON),
+			 claw(CLAW_SOLENOID),
+			 scythe(SCYTHE_TALON)
 	{
 		rawDrive.SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
 		rawDrive.SetInvertedMotor(RobotDrive::kRearLeftMotor, true);
@@ -143,6 +152,25 @@ public:
 			} else {
 				rawDrive.MecanumDrive_Cartesian(right, forward, clockwise);
 			}
+
+			if(fabs(liftJoy.GetRawAxis(1)) < 0.2) {
+				lift.Set(0.0);
+			} else {
+				lift.Set(liftJoy.GetRawAxis(1));
+			}
+			if(liftJoy.GetRawButton(0)) {
+				claw.Set(true);
+			} else if(liftJoy.GetRawButton(2)) {
+				claw.Set(false);
+			}
+			if(liftJoy.GetRawButton(3)) {
+				scythe.Set(1.0);
+			} else if(liftJoy.GetRawButton(4)) {
+				scythe.Set(-1.0);
+			} else {
+				scythe.Set(0.0);
+			}
+
 			//printf("Forward: %f,\tRight: %f,\tClockwise: %f\n", forward, right, clockwise);
 			SmartDashboard::PutString("DB/String 0", "Forward:");
 			SmartDashboard::PutString("DB/String 5", to_string(forward));

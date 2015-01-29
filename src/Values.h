@@ -5,6 +5,7 @@
 
 	const int RIGHT_JOYSTICK = 0;
 	const int LEFT_JOYSTICK = 1;
+	const int LIFT_JOYSTICK = 2;
 
 	const int FR_DRIVE_TALON		= 0;
 	const int FL_DRIVE_TALON		= 1;
@@ -37,5 +38,9 @@
 	const double DRIVE_PID_KD = 0.0005;
 	const double DRIVE_PID_KF = 0.5;
 	const double DRIVE_PID[5] = {DRIVE_PID_KP, DRIVE_PID_KI, DRIVE_PID_KD, DRIVE_PID_KF, DRIVE_PID_SCALAR};
+
+	const int LIFT_TALON = 4;
+	const int CLAW_SOLENOID = 0;
+	const int SCYTHE_TALON = 5;
 
 #endif  //VALUES_H
