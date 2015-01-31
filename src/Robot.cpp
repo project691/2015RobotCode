@@ -158,14 +158,14 @@ public:
 			} else {
 				lift.Set(liftJoy.GetRawAxis(1));
 			}
-			if(liftJoy.GetRawButton(0)) {
+			if(liftJoy.GetRawButton(1)) {
 				claw.Set(true);
-			} else if(liftJoy.GetRawButton(2)) {
+			} else if(liftJoy.GetRawButton(3)) {
 				claw.Set(false);
 			}
-			if(liftJoy.GetRawButton(3)) {
+			if(liftJoy.GetRawButton(4)) {
 				scythe.Set(1.0);
-			} else if(liftJoy.GetRawButton(4)) {
+			} else if(liftJoy.GetRawButton(5)) {
 				scythe.Set(-1.0);
 			} else {
 				scythe.Set(0.0);
