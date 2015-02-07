@@ -24,10 +24,10 @@ private:
 	Encoder flEnc;
 	Encoder brEnc;
 	Encoder blEnc;
-	PIDVelocityMotor fr;
-	PIDVelocityMotor fl;
-	PIDVelocityMotor br;
-	PIDVelocityMotor bl;
+	PIDMotor fr;
+	PIDMotor fl;
+	PIDMotor br;
+	PIDMotor bl;
 
 	Mecanum drive;
 	double forward;

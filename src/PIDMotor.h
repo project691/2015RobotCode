@@ -1,34 +1,37 @@
-//PIDVelocityMotor.h
+//PIDMotor.h
 
-#ifndef PIDVELOCITYMOTOR_H
-#define PIDVELOCITYMOTOR_H
+#ifndef PIDMOTOR_H
+#define PIDMOTOR_H
 
 //Includes
 #include "WPILib.h"
 
 //Declaration
-class PIDVelocityMotor {
+class PIDMotor {
 public:
 	//Constructor
-	PIDVelocityMotor(const char *_name,
-					 Talon &_motor,
-					 Encoder &_encoder,
-					 const double _pid[]);
+	PIDMotor(const char *_name,
+			 Talon &_motor,
+			 Encoder &_encoder,
+			 const double _pid[],
+			 bool _velocity = true);
 
 	//Destructor
-	~PIDVelocityMotor();
+	~PIDMotor();
 
 	//Functions
 	void run();
-	void run(double rpm);
+	void run(double _target);
 	bool atTarget();
 	const char * getName();
+	void setType(bool _velocity);
 
-	private:
+private:
 	//Init data
 	const char * name;
 	Talon &motor;
 	Encoder &encoder;
+	bool velocity;
 	//PIDMotor input
 	double target;
 	double error;
@@ -55,4 +58,4 @@ public:
 	double lastTime;
 };
 
-#endif //PIDVELOCITYMOTOR_H
+#endif //PIDMOTOR_H

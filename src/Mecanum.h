@@ -4,14 +4,17 @@
 #define MECANUM_H
 
 //Includes
-#include <PIDVelocityMotor.h>
 #include "WPILib.h"
+#include "PIDMotor.h"
 
 //Declaration
 class Mecanum {
 public:
 	//Constructor
-	Mecanum(PIDVelocityMotor &_fr, PIDVelocityMotor &_fl, PIDVelocityMotor &_br, PIDVelocityMotor &_bl);
+	Mecanum(PIDMotor &_fr,
+			PIDMotor &_fl,
+			PIDMotor &_br,
+			PIDMotor &_bl);
 
 	//Destructor
 	~Mecanum();
@@ -25,10 +28,10 @@ public:
 private:
 	//Init Data
 	//PIDMotors
-	PIDVelocityMotor &fr;
-	PIDVelocityMotor &fl;
-	PIDVelocityMotor &br;
-	PIDVelocityMotor &bl;
+	PIDMotor &fr;
+	PIDMotor &fl;
+	PIDMotor &br;
+	PIDMotor &bl;
 	//Mecanum control
 	double frVel;
 	double flVel;

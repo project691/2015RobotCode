@@ -2,22 +2,22 @@
 
 //Includes
 #include <cmath>
-#include "PIDVelocityMotor.h"
 #include "Mecanum.h"
+#include "PIDMotor.h"
 
 //Constructor
-Mecanum::Mecanum(PIDVelocityMotor &_fr,
-				 PIDVelocityMotor &_fl,
-				 PIDVelocityMotor &_br,
-				 PIDVelocityMotor &_bl) : fr(_fr),
-										  fl(_fl),
-										  br(_br),
-										  bl(_bl),
-										  frVel(0.0),
-										  flVel(0.0),
-										  brVel(0.0),
-										  blVel(0.0),
-										  topVel(0.0)
+Mecanum::Mecanum(PIDMotor &_fr,
+				 PIDMotor &_fl,
+				 PIDMotor &_br,
+				 PIDMotor &_bl) : fr(_fr),
+								  fl(_fl),
+								  br(_br),
+								  bl(_bl),
+								  frVel(0.0),
+								  flVel(0.0),
+								  brVel(0.0),
+								  blVel(0.0),
+								  topVel(0.0)
 {
 	printf("Mecanum drive object created!\n");
 }
