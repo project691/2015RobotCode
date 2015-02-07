@@ -42,5 +42,6 @@
 	const int LIFT_TALON = 4;
 	const int CLAW_SOLENOID = 0;
 	const int SCYTHE_TALON = 5;
+	const int SCYTHE_LIMIT = 8;
 
 #endif  //VALUES_H
