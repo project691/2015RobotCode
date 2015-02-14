@@ -37,10 +37,15 @@ private:
 	RobotDrive rawDrive;
 	bool useEncoders;
 
-	Talon lift;
+	Talon liftMotor;
+	Encoder liftEnc;
+	PIDMotor lift;
+	AnalogInput liftUpperLimit;
+	AnalogInput liftLowerLimit;
+
 	Solenoid claw;
 	Talon scythe;
-	DigitalInput scytheLimit;
+	AnalogInput scytheLimit;
 
 	bool setup;
 	bool move;
@@ -71,7 +76,11 @@ public:
 			 scalar(1.0),
 			 rawDrive(flMotor, blMotor, frMotor, brMotor),
 			 useEncoders(true),
-			 lift(LIFT_TALON),
+			 liftMotor(LIFT_TALON),
+			 liftEnc(LIFT_ENCODER_A, LIFT_ENCODER_B, LIFT_ENCODER_REVERSE),
+			 lift("LIFT", liftMotor, liftEnc, LIFT_PID),
+			 liftUpperLimit(LIFT_UPPER_LIMIT),
+			 liftLowerLimit(LIFT_LOWER_LIMIT),
 			 claw(CLAW_SOLENOID),
 			 scythe(SCYTHE_TALON),
 			 scytheLimit(SCYTHE_LIMIT),
@@ -88,6 +97,7 @@ public:
 		flEnc.SetDistancePerPulse(FL_DRIVE_ENCODER_DISTANCE_PER_PULSE);
 		brEnc.SetDistancePerPulse(BR_DRIVE_ENCODER_DISTANCE_PER_PULSE);
 		blEnc.SetDistancePerPulse(BL_DRIVE_ENCODER_DISTANCE_PER_PULSE);
+		liftEnc.SetDistancePerPulse(LIFT_ENCODER_DISTANCE_PER_PULSE);
 	}
 
 	/**
@@ -130,7 +140,7 @@ public:
 				} else {
 					rawDrive.MecanumDrive_Cartesian(0.0, 1.0, 0.0);
 				}
-				if(scytheLimit.Get()) {
+				if(scytheLimit.GetVoltage() >= 4.5) {
 					if(useEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
@@ -241,10 +251,18 @@ public:
 				rawDrive.MecanumDrive_Cartesian(right, forward, clockwise);
 			}
 
-			if(fabs(liftJoy.GetRawAxis(1)) < 0.2) {
-				lift.Set(0.0);
+			if((!useEncoders && fabs(liftJoy.GetRawAxis(1)) < 0.2) || (liftUpperLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) < 0.0) || (liftLowerLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) > 0.0)) {
+				if(useEncoders) {
+					lift.run(0.0);
+				} else {
+					liftMotor.Set(0.0);
+				}
 			} else {
-				lift.Set(liftJoy.GetRawAxis(1));
+				if(useEncoders) {
+					lift.run(liftJoy.GetRawAxis(1));
+				} else {
+					liftMotor.Set(liftJoy.GetRawAxis(1));
+				}
 			}
 			if(liftJoy.GetRawButton(1)) {
 				claw.Set(true);

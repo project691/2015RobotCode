@@ -40,8 +40,24 @@
 	const double DRIVE_PID[5] = {DRIVE_PID_KP, DRIVE_PID_KI, DRIVE_PID_KD, DRIVE_PID_KF, DRIVE_PID_SCALAR};
 
 	const int LIFT_TALON = 4;
+	const int LIFT_UPPER_LIMIT = 0;
+	const int LIFT_LOWER_LIMIT = 1;
+
+	const int LIFT_ENCODER_A	= 8;
+	const int LIFT_ENCODER_B	= 9;
+	const double LIFT_ENCODER_DISTANCE_PER_PULSE = 1.0;
+	const bool LIFT_ENCODER_REVERSE = false;
+
+	const double LIFT_PID_SCALAR = 1325.0;
+	const double LIFT_PID_KP = 0.4;
+	const double LIFT_PID_KI = 0.0;
+	const double LIFT_PID_KD = 0.0005;
+	const double LIFT_PID_KF = 0.5;
+	const double LIFT_PID[5] = {LIFT_PID_KP, LIFT_PID_KI, LIFT_PID_KD, LIFT_PID_KF, LIFT_PID_SCALAR};
+
 	const int CLAW_SOLENOID = 0;
+
 	const int SCYTHE_TALON = 5;
-	const int SCYTHE_LIMIT = 8;
+	const int SCYTHE_LIMIT = 2;
 
 #endif  //VALUES_H
