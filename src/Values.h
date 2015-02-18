@@ -7,10 +7,10 @@
 	const int LEFT_JOYSTICK = 1;
 	const int LIFT_JOYSTICK = 2;
 
-	const int FR_DRIVE_TALON		= 0;
-	const int FL_DRIVE_TALON		= 1;
-	const int BR_DRIVE_TALON		= 2;
-	const int BL_DRIVE_TALON		= 3;
+	const int FR_DRIVE_TALON		= 2;
+	const int FL_DRIVE_TALON		= 0;
+	const int BR_DRIVE_TALON		= 3;
+	const int BL_DRIVE_TALON		= 1;
 
 	const int FR_DRIVE_ENCODER_A	= 0;
 	const int FR_DRIVE_ENCODER_B	= 1;

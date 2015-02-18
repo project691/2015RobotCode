@@ -268,7 +268,7 @@ public:
 					}
 					lift.run();
 				} else {
-					liftMotor.Set(-liftJoy.GetRawAxis(1));
+					liftMotor.Set(-liftJoy.GetRawAxis(1) * fabs(liftJoy.GetRawAxis(1)));
 				}
 			}
 			if(liftJoy.GetRawButton(1) && !clawLatch) {
