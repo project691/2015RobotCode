@@ -44,6 +44,7 @@ private:
 	AnalogInput liftLowerLimit;
 
 	Solenoid claw;
+	bool clawLatch;
 	Talon scythe;
 	AnalogInput scytheLimit;
 
@@ -78,10 +79,11 @@ public:
 			 useEncoders(true),
 			 liftMotor(LIFT_TALON),
 			 liftEnc(LIFT_ENCODER_A, LIFT_ENCODER_B, LIFT_ENCODER_REVERSE),
-			 lift("LIFT", liftMotor, liftEnc, LIFT_PID),
+			 lift("LIFT", liftMotor, liftEnc, LIFT_PID, false),
 			 liftUpperLimit(LIFT_UPPER_LIMIT),
 			 liftLowerLimit(LIFT_LOWER_LIMIT),
 			 claw(CLAW_SOLENOID),
+			 clawLatch(false),
 			 scythe(SCYTHE_TALON),
 			 scytheLimit(SCYTHE_LIMIT),
 			 setup(true),
@@ -259,15 +261,21 @@ public:
 				}
 			} else {
 				if(useEncoders) {
-					lift.run(liftJoy.GetRawAxis(1));
+					if(liftJoy.GetRawButton(3)) {
+						lift.run(liftEnc.GetDistance() + 90);
+					} else if(liftJoy.GetRawButton(2)) {
+						lift.run(liftEnc.GetDistance() - 90);
+					}
+					lift.run();
 				} else {
-					liftMotor.Set(liftJoy.GetRawAxis(1));
+					liftMotor.Set(-liftJoy.GetRawAxis(1));
 				}
 			}
-			if(liftJoy.GetRawButton(1)) {
-				claw.Set(true);
-			} else if(liftJoy.GetRawButton(3)) {
-				claw.Set(false);
+			if(liftJoy.GetRawButton(1) && !clawLatch) {
+				claw.Set(!claw.Get());
+				clawLatch = true;
+			} else if(!liftJoy.GetRawButton(1) && clawLatch) {
+				clawLatch = false;
 			}
 			if(liftJoy.GetRawButton(4)) {
 				scythe.Set(1.0);
