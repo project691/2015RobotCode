@@ -35,13 +35,14 @@ private:
 	double clockwise;
 	double scalar;
 	RobotDrive rawDrive;
-	bool useEncoders;
+	bool useDriveEncoders;
 
 	Talon liftMotor;
 	Encoder liftEnc;
 	PIDMotor lift;
 	AnalogInput liftUpperLimit;
 	AnalogInput liftLowerLimit;
+	bool useLiftEncoder;
 
 	Solenoid claw;
 	bool clawLatch;
@@ -76,12 +77,13 @@ public:
 			 clockwise(0.0),
 			 scalar(1.0),
 			 rawDrive(flMotor, blMotor, frMotor, brMotor),
-			 useEncoders(true),
+			 useDriveEncoders(true),
 			 liftMotor(LIFT_TALON),
 			 liftEnc(LIFT_ENCODER_A, LIFT_ENCODER_B, LIFT_ENCODER_REVERSE),
 			 lift("LIFT", liftMotor, liftEnc, LIFT_PID, false),
 			 liftUpperLimit(LIFT_UPPER_LIMIT),
 			 liftLowerLimit(LIFT_LOWER_LIMIT),
+			 useLiftEncoder(false),
 			 claw(CLAW_SOLENOID),
 			 clawLatch(false),
 			 scythe(SCYTHE_TALON),
@@ -137,13 +139,13 @@ public:
 			}
 			//Drive forward
 			if(move) {
-				if(useEncoders) {
+				if(useDriveEncoders) {
 					drive.update(1.0, 0.0, 0.0);
 				} else {
 					rawDrive.MecanumDrive_Cartesian(0.0, 1.0, 0.0);
 				}
 				if(scytheLimit.GetVoltage() >= 4.5) {
-					if(useEncoders) {
+					if(useDriveEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
 						rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 0.0);
@@ -158,13 +160,13 @@ public:
 			}
 			//Turn when can is hit
 			if(turn) {
-				if(useEncoders) {
+				if(useDriveEncoders) {
 					drive.update(0.0, 0.0, 1.0);
 				} else {
 					rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 1.0);
 				}
 				if(GetTime() - time >= 0.5) {
-					if(useEncoders) {
+					if(useDriveEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
 						rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 0.0);
@@ -179,13 +181,13 @@ public:
 			}
 			//Turn back to forward
 			if(reset) {
-				if(useEncoders) {
+				if(useDriveEncoders) {
 					drive.update(0.0, 0.0, -1.0);
 				} else {
 					rawDrive.MecanumDrive_Cartesian(0.0, 0.0, -1.0);
 				}
 				if(GetTime() - time >= 0.5) {
-					if(useEncoders) {
+					if(useDriveEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
 						rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 0.0);
@@ -241,26 +243,26 @@ public:
 				clockwise = 0.0;
 			}
 			if(rJoy.GetRawButton(2) && lJoy.GetRawButton(2)) {
-				useEncoders = true;
+				useDriveEncoders = true;
 			}
 			if(rJoy.GetRawButton(3) && lJoy.GetRawButton(3)) {
-				useEncoders = false;
+				useDriveEncoders = false;
 			}
-			if(useEncoders) {
+			if(useDriveEncoders) {
 				drive.update(forward, right, clockwise);
 							//Forward  Right  Clockwise
 			} else {
 				rawDrive.MecanumDrive_Cartesian(right, forward, clockwise);
 			}
 
-			if((!useEncoders && fabs(liftJoy.GetRawAxis(1)) < 0.2) || (liftUpperLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) < 0.0) || (liftLowerLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) > 0.0)) {
-				if(useEncoders) {
+			if((!useLiftEncoder && fabs(liftJoy.GetRawAxis(1)) < 0.2) || (liftUpperLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) < 0.0) || (liftLowerLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) > 0.0)) {
+				if(useLiftEncoder) {
 					lift.run(0.0);
 				} else {
 					liftMotor.Set(0.0);
 				}
 			} else {
-				if(useEncoders) {
+				if(useLiftEncoder) {
 					if(liftJoy.GetRawButton(3)) {
 						lift.run(liftEnc.GetDistance() + 90);
 					} else if(liftJoy.GetRawButton(2)) {
