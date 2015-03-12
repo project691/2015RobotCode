@@ -13,7 +13,7 @@ public:
 	PIDMotor(const char *_name,
 			 Talon &_motor,
 			 Encoder &_encoder,
-			 const double _pid[],
+			 const double *_pid,
 			 bool _velocity = true);
 
 	//Destructor
@@ -25,10 +25,11 @@ public:
 	bool atTarget();
 	const char * getName();
 	void setType(bool _velocity);
+	void setFIR(double *_kFIR);
 
 private:
 	//Init data
-	const char * name;
+	const char *name;
 	Talon &motor;
 	Encoder &encoder;
 	bool velocity;
@@ -36,13 +37,17 @@ private:
 	double target;
 	double error;
 	double deltaTime;
+	//FIR filter
+	double lastInputs[100];
+	double *kFIR;
+	int firLen;
 	//PIDMotor scale
 	double kp;
 	double ki;
 	double kd;
 	double kf;
 	double scalar;
-	//PIDMotor out
+	//PIDMotor calculations
 	double proportional;
 	double integral;
 	double derivative;

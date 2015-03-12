@@ -8,7 +8,7 @@
 PIDMotor::PIDMotor(const char *_name,
 				   Talon &_motor,
 				   Encoder &_encoder,
-				   const double _pid[],
+				   const double *_pid,
 				   bool _velocity /* = true */) : name(_name),
 												  motor(_motor),
 												  encoder(_encoder),
@@ -16,6 +16,9 @@ PIDMotor::PIDMotor(const char *_name,
 												  target(0.0),
 												  error(0.0),
 												  deltaTime(0.0),
+												  lastInputs{0.0},
+												  kFIR(NULL),
+												  firLen(0),
 												  kp(_pid[0]),
 												  ki(_pid[1]),
 												  kd(_pid[2]),
@@ -41,7 +44,7 @@ PIDMotor::~PIDMotor() {}
 
 //Functions
 
-//PIDMotor control
+//PIDMotor update
 void PIDMotor::run() {
 	if(GetTime() - 0.01 > lastTime) {
 		if(velocity) {
@@ -111,7 +114,22 @@ void PIDMotor::run() {
 
 //PIDMotor control
 void PIDMotor::run(double _target) {
-	target = _target;
+	if(firLen > 0) {
+		target = _target;
+	} else {
+		target = 0;
+
+		for(int i = 99; i > 0; i--) {
+			lastInputs[i] = lastInputs[i - 1];
+		}
+		lastInputs[0] = _target;
+
+		for(int i = 0; i < firLen; i++) {
+			target += lastInputs[i] * kFIR[i];
+		}
+
+		target /= firLen;
+	}
 	run();
 }
 
@@ -129,4 +147,12 @@ const char * PIDMotor::getName() {
 
 void PIDMotor::setType(bool _velocity) {
 	velocity = _velocity;
+}
+
+void PIDMotor::setFIR(double *_kFIR) {
+	firLen = sizeof(_kFIR) / sizeof(double);
+	if(firLen > 99) {
+		firLen = 99;
+	}
+	kFIR = _kFIR;
 }
