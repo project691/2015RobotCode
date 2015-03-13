@@ -114,7 +114,7 @@ void PIDMotor::run() {
 
 //PIDMotor control
 void PIDMotor::run(double _target) {
-	if(firLen > 0) {
+	if(firLen == 0) {
 		target = _target;
 	} else {
 		target = 0;

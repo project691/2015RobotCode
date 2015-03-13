@@ -74,7 +74,7 @@ public:
 			 clockwise(0.0),
 			 scalar(1.0),
 			 rawDrive(flMotor, blMotor, frMotor, brMotor),
-			 useDriveEncoders(true),
+			 useDriveEncoders(false),
 			 liftMotor(LIFT_TALON),
 			 liftEnc(LIFT_ENCODER_A, LIFT_ENCODER_B, LIFT_ENCODER_REVERSE),
 			 lift("LIFT", liftMotor, liftEnc, LIFT_PID, false),
