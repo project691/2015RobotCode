@@ -47,12 +47,9 @@ private:
 	Solenoid claw;
 	bool clawLatch;
 	Talon scythe;
-	AnalogInput scytheLimit;
 
 	bool setup;
 	bool move;
-	bool turn;
-	bool reset;
 	double time;
 
 public:
@@ -87,11 +84,8 @@ public:
 			 claw(CLAW_SOLENOID),
 			 clawLatch(false),
 			 scythe(SCYTHE_TALON),
-			 scytheLimit(SCYTHE_LIMIT),
 			 setup(true),
 			 move(false),
-			 turn(false),
-			 reset(false),
 			 time(GetTime())
 	{
 		rawDrive.SetInvertedMotor(RobotDrive::kFrontLeftMotor, true);
@@ -123,11 +117,14 @@ public:
 	 */
 	void Autonomous() {
 		printf("Autonomous mode enabled!\n");
+		setup = true;
+		move = false;
+		time = GetTime();
 		while(IsEnabled() && IsAutonomous()) {
 			//Extend arm
 			if(setup) {
 				scythe.Set(0.5);
-				if(GetTime() - time >= 0.5) {
+				if(GetTime() - time >= 1.0) {
 					scythe.Set(0.0);
 					Wait(0.01);
 					setup = false;
@@ -140,11 +137,11 @@ public:
 			//Drive forward
 			if(move) {
 				if(useDriveEncoders) {
-					drive.update(1.0, 0.0, 0.0);
+					drive.update(-0.75, 0.0, 0.0);
 				} else {
-					rawDrive.MecanumDrive_Cartesian(0.0, 1.0, 0.0);
+					rawDrive.MecanumDrive_Cartesian(0.0, -0.75, 0.0);
 				}
-				if(scytheLimit.GetVoltage() >= 4.5) {
+				if(GetTime() - time >= 1.0) {
 					if(useDriveEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
@@ -152,49 +149,6 @@ public:
 					}
 					Wait(0.01);
 					move = false;
-					turn = true;
-					time = GetTime();
-				} else {
-					Wait(0.005);
-				}
-			}
-			//Turn when can is hit
-			if(turn) {
-				if(useDriveEncoders) {
-					drive.update(0.0, 0.0, 1.0);
-				} else {
-					rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 1.0);
-				}
-				if(GetTime() - time >= 0.5) {
-					if(useDriveEncoders) {
-						drive.update(0.0, 0.0, 0.0);
-					} else {
-						rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 0.0);
-					}
-					Wait(0.01);
-					turn = false;
-					reset = true;
-					time = GetTime();
-				} else {
-					Wait(0.005);
-				}
-			}
-			//Turn back to forward
-			if(reset) {
-				if(useDriveEncoders) {
-					drive.update(0.0, 0.0, -1.0);
-				} else {
-					rawDrive.MecanumDrive_Cartesian(0.0, 0.0, -1.0);
-				}
-				if(GetTime() - time >= 0.5) {
-					if(useDriveEncoders) {
-						drive.update(0.0, 0.0, 0.0);
-					} else {
-						rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 0.0);
-					}
-					Wait(0.01);
-					reset = false;
-					move = true;
 					time = GetTime();
 				} else {
 					Wait(0.005);

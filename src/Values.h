@@ -58,6 +58,5 @@
 	const int CLAW_SOLENOID = 0;
 
 	const int SCYTHE_TALON = 5;
-	const int SCYTHE_LIMIT = 2;
 
-#endif  //VALUES_H
+#endif //VALUES_H
