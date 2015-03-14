@@ -49,6 +49,7 @@ private:
 	Talon scythe;
 
 	bool setup;
+	bool grab;
 	bool move;
 	double time;
 
@@ -85,6 +86,7 @@ public:
 			 clawLatch(false),
 			 scythe(SCYTHE_TALON),
 			 setup(true),
+			 grab(false),
 			 move(false),
 			 time(GetTime())
 	{
@@ -118,34 +120,76 @@ public:
 	void Autonomous() {
 		printf("Autonomous mode enabled!\n");
 		setup = true;
+		grab = false;
 		move = false;
 		time = GetTime();
 		while(IsEnabled() && IsAutonomous()) {
-			//Extend arm
+			//Grab box
 			if(setup) {
-				scythe.Set(0.5);
-				if(GetTime() - time >= 1.0) {
-					scythe.Set(0.0);
-					Wait(0.01);
-					setup = false;
-					move = true;
-					time = GetTime();
-				} else {
-					Wait(0.005);
-				}
-			}
-			//Drive forward
-			if(move) {
 				if(useDriveEncoders) {
-					drive.update(-0.75, 0.0, 0.0);
+					drive.update(-0.5, 0.0, 0.0);
 				} else {
-					rawDrive.MecanumDrive_Cartesian(0.0, -0.75, 0.0);
+					rawDrive.MecanumDrive_Cartesian(0.0, -0.5, 0.0);
 				}
 				if(GetTime() - time >= 1.0) {
 					if(useDriveEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
 						rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 0.0);
+					}
+					Wait(0.5);
+					claw.Set(true);
+					Wait(2.0);
+					setup = false;
+					grab = true;
+					time = GetTime();
+				} else {
+					Wait(0.005);
+				}
+			}
+			//Lift box
+			if(grab) {
+				if(useLiftEncoder) {
+					lift.run(500.0);
+				} else {
+					liftMotor.Set(0.5);
+				}
+				if(GetTime() - time >= 1.0) {
+					if(useDriveEncoders) {
+						lift.run(500.0);
+					} else {
+						liftMotor.Set(0.1);
+					}
+					Wait(0.01);
+					grab = false;
+					move = true;
+					time = GetTime();
+				} else {
+					Wait(0.005);
+				}
+			}
+			//Drive backward
+			if(move) {
+				if(useDriveEncoders) {
+					drive.update(0.45, 0.0, 0.0);
+				} else {
+					rawDrive.MecanumDrive_Cartesian(0.0, 0.45, 0.0);
+				}
+				if(useDriveEncoders) {
+					lift.run(500.0);
+				} else {
+					liftMotor.Set(0.1);
+				}
+				if(GetTime() - time >= 7.0) {
+					if(useDriveEncoders) {
+						drive.update(0.0, 0.0, 0.0);
+					} else {
+						rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 0.0);
+					}
+					if(useDriveEncoders) {
+						lift.run(0.0);
+					} else {
+						liftMotor.Set(0.0);
 					}
 					Wait(0.01);
 					move = false;
@@ -218,9 +262,9 @@ public:
 			} else {
 				if(useLiftEncoder) {
 					if(liftJoy.GetRawButton(3)) {
-						lift.run(liftEnc.GetDistance() + 90);
+						lift.run(liftEnc.GetDistance() + 500.0);
 					} else if(liftJoy.GetRawButton(2)) {
-						lift.run(liftEnc.GetDistance() - 90);
+						lift.run(liftEnc.GetDistance() - 500.0);
 					}
 					lift.run();
 				} else {
