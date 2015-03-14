@@ -49,7 +49,6 @@ private:
 	Talon scythe;
 
 	bool setup;
-	bool grab;
 	bool move;
 	double time;
 
@@ -86,7 +85,6 @@ public:
 			 clawLatch(false),
 			 scythe(SCYTHE_TALON),
 			 setup(true),
-			 grab(false),
 			 move(false),
 			 time(GetTime())
 	{
@@ -120,7 +118,6 @@ public:
 	void Autonomous() {
 		printf("Autonomous mode enabled!\n");
 		setup = true;
-		grab = false;
 		move = false;
 		time = GetTime();
 		while(IsEnabled() && IsAutonomous()) {
@@ -141,27 +138,6 @@ public:
 					claw.Set(true);
 					Wait(2.0);
 					setup = false;
-					grab = true;
-					time = GetTime();
-				} else {
-					Wait(0.005);
-				}
-			}
-			//Lift box
-			if(grab) {
-				if(useLiftEncoder) {
-					lift.run(500.0);
-				} else {
-					liftMotor.Set(0.5);
-				}
-				if(GetTime() - time >= 1.0) {
-					if(useDriveEncoders) {
-						lift.run(500.0);
-					} else {
-						liftMotor.Set(0.1);
-					}
-					Wait(0.01);
-					grab = false;
 					move = true;
 					time = GetTime();
 				} else {
@@ -175,21 +151,11 @@ public:
 				} else {
 					rawDrive.MecanumDrive_Cartesian(0.0, 0.45, 0.0);
 				}
-				if(useDriveEncoders) {
-					lift.run(500.0);
-				} else {
-					liftMotor.Set(0.1);
-				}
-				if(GetTime() - time >= 7.0) {
+				if(GetTime() - time >= 6.5) {	//Bump: 6.5, Flat: 4.5
 					if(useDriveEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
 						rawDrive.MecanumDrive_Cartesian(0.0, 0.0, 0.0);
-					}
-					if(useDriveEncoders) {
-						lift.run(0.0);
-					} else {
-						liftMotor.Set(0.0);
 					}
 					Wait(0.01);
 					move = false;
