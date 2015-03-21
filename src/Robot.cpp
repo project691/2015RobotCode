@@ -177,28 +177,21 @@ public:
 				forward = 0.0;
 			} else {
 				forward = rJoy.GetRawAxis(1);
-				forward *= fabs(forward);
+				forward *= fabs(forward) * fabs(forward);
 				forward *= scalar;
 			}
 			if(fabs(rJoy.GetRawAxis(0)) < 0.2) {
 				right = 0.0;
 			} else {
 				right = rJoy.GetRawAxis(0);
-				right *= fabs(right);
+				right *= fabs(right) * fabs(right);
 				right *= scalar;
 			}
 			if(fabs(lJoy.GetRawAxis(0)) < 0.2) {
 				clockwise = 0.0;
 			} else {
 				clockwise = lJoy.GetRawAxis(0);
-				//if(fabs(clockwise) <= 0.5) {
-				//	clockwise *= 0.5;
-				//} else {
-					//clockwise *= fabs(clockwise);
-					//if(!rJoy.GetRawButton(4) && !lJoy.GetRawButton(4) && !rJoy.GetRawButton(5) && !lJoy.GetRawButton(5)) {
-					//	clockwise *= 0.75;
-					//}
-				//}
+				clockwise *= fabs(clockwise) * fabs(clockwise);
 				clockwise *= scalar;
 			}
 			if(rJoy.GetRawButton(1) || lJoy.GetRawButton(1)) {
@@ -234,7 +227,7 @@ public:
 					}
 					lift.run();
 				} else {
-					liftMotor.Set(-liftJoy.GetRawAxis(1) * fabs(liftJoy.GetRawAxis(1)));
+					liftMotor.Set(-liftJoy.GetRawAxis(1) * fabs(liftJoy.GetRawAxis(1)) * fabs(liftJoy.GetRawAxis(1)));
 				}
 			}
 			if(liftJoy.GetRawButton(1) && !clawLatch) {
