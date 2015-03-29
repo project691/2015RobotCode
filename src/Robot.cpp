@@ -128,7 +128,7 @@ public:
 				} else {
 					rawDrive.MecanumDrive_Cartesian(0.0, -0.5, 0.0);
 				}
-				if(GetTime() - time >= 1.0) {
+				if(GetTime() - time >= 0.75) {
 					if(useDriveEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
@@ -151,7 +151,7 @@ public:
 				} else {
 					rawDrive.MecanumDrive_Cartesian(0.0, 0.45, 0.0);
 				}
-				if(GetTime() - time >= 6.5) {	//Bump: 6.5, Flat: 4.5
+				if(GetTime() - time >= 4.5) {	//Bump: 4.5, Flat: 2.5
 					if(useDriveEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
