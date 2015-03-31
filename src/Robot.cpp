@@ -52,6 +52,8 @@ private:
 	bool move;
 	double time;
 
+	static SmartDashboard dashboard;
+
 public:
 	Robot(): rJoy(RIGHT_JOYSTICK),
 			 lJoy(LEFT_JOYSTICK),
@@ -103,6 +105,9 @@ public:
 	 */
 	void RobotInit() {
 		printf("Robot initialized!\n");
+		dashboard.init();
+		CameraServer::GetInstance()->SetQuality(50);
+		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 	}
 
 	/**
@@ -151,7 +156,7 @@ public:
 				} else {
 					rawDrive.MecanumDrive_Cartesian(0.0, 0.45, 0.0);
 				}
-				if(GetTime() - time >= 4.5) {	//Bump: 4.5, Flat: 2.5
+				if(GetTime() - time >= 4.25) {	//Bump: 4.5, Flat: 2.5
 					if(useDriveEncoders) {
 						drive.update(0.0, 0.0, 0.0);
 					} else {
@@ -245,14 +250,14 @@ public:
 			}
 
 			//printf("Forward: %f,\tRight: %f,\tClockwise: %f\n", forward, right, clockwise);
-			SmartDashboard::PutString("DB/String 0", "Forward:");
-			SmartDashboard::PutString("DB/String 5", to_string(forward));
-			SmartDashboard::PutString("DB/String 1", "Right:");
-			SmartDashboard::PutString("DB/String 6", to_string(right));
-			SmartDashboard::PutString("DB/String 2", "Clockwise:");
-			SmartDashboard::PutString("DB/String 7", to_string(clockwise));
-			SmartDashboard::PutString("DB/String 3", "Time:");
-			SmartDashboard::PutString("DB/String 8", to_string(GetTime()));
+			dashboard.PutString("DB/String 0", "Forward:");
+			dashboard.PutString("DB/String 5", to_string(forward));
+			dashboard.PutString("DB/String 1", "Right:");
+			dashboard.PutString("DB/String 6", to_string(right));
+			dashboard.PutString("DB/String 2", "Clockwise:");
+			dashboard.PutString("DB/String 7", to_string(clockwise));
+			dashboard.PutString("DB/String 3", "Time:");
+			dashboard.PutString("DB/String 8", to_string(GetTime()));
 
 			Wait(0.005);
 		}
