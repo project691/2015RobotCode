@@ -225,9 +225,9 @@ public:
 				}
 			} else {
 				if(useLiftEncoder) {
-					if(liftJoy.GetRawButton(3)) {
+					if(liftJoy.GetRawButton(4)) {
 						lift.run(liftEnc.GetDistance() + 500.0);
-					} else if(liftJoy.GetRawButton(2)) {
+					} else if(liftJoy.GetRawButton(5)) {
 						lift.run(liftEnc.GetDistance() - 500.0);
 					}
 					lift.run();
@@ -241,12 +241,12 @@ public:
 			} else if(!liftJoy.GetRawButton(1) && clawLatch) {
 				clawLatch = false;
 			}
-			if(liftJoy.GetRawButton(4)) {
-				scythe.Set(1.0);
-			} else if(liftJoy.GetRawButton(5)) {
-				scythe.Set(-1.0);
-			} else {
+			if(liftJoy.GetRawButton(3)) {
+				scythe.Set(0.4);
+			} else if(liftJoy.GetRawButton(2)) {
 				scythe.Set(0.0);
+			} else {
+				scythe.Set(0.1);
 			}
 
 			//printf("Forward: %f,\tRight: %f,\tClockwise: %f\n", forward, right, clockwise);
