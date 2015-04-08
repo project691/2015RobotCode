@@ -106,8 +106,8 @@ public:
 	void RobotInit() {
 		printf("Robot initialized!\n");
 		dashboard.init();
-		CameraServer::GetInstance()->SetQuality(50);
-		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+		//CameraServer::GetInstance()->SetQuality(50);
+		//CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 	}
 
 	/**
@@ -182,21 +182,21 @@ public:
 				forward = 0.0;
 			} else {
 				forward = rJoy.GetRawAxis(1);
-				forward *= fabs(forward) * fabs(forward);
+				forward *= fabs(forward);
 				forward *= scalar;
 			}
 			if(fabs(rJoy.GetRawAxis(0)) < 0.2) {
 				right = 0.0;
 			} else {
 				right = rJoy.GetRawAxis(0);
-				right *= fabs(right) * fabs(right);
+				right *= fabs(right);
 				right *= scalar;
 			}
 			if(fabs(lJoy.GetRawAxis(0)) < 0.2) {
 				clockwise = 0.0;
 			} else {
 				clockwise = lJoy.GetRawAxis(0);
-				clockwise *= fabs(clockwise) * fabs(clockwise);
+				clockwise *= fabs(clockwise);
 				clockwise *= scalar;
 			}
 			if(rJoy.GetRawButton(1) || lJoy.GetRawButton(1)) {
