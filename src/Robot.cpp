@@ -199,17 +199,6 @@ public:
 				clockwise *= fabs(clockwise);
 				clockwise *= scalar;
 			}
-			if(rJoy.GetRawButton(1) || lJoy.GetRawButton(1)) {
-				forward = 0.0;
-				right = 0.0;
-				clockwise = 0.0;
-			}
-			if(rJoy.GetRawButton(2) && lJoy.GetRawButton(2)) {
-				useDriveEncoders = true;
-			}
-			if(rJoy.GetRawButton(3) && lJoy.GetRawButton(3)) {
-				useDriveEncoders = false;
-			}
 			if(useDriveEncoders) {
 				drive.update(forward, right, clockwise);
 							//Forward  Right  Clockwise
@@ -235,10 +224,10 @@ public:
 					liftMotor.Set(-liftJoy.GetRawAxis(1) * fabs(liftJoy.GetRawAxis(1)) * fabs(liftJoy.GetRawAxis(1)));
 				}
 			}
-			if(liftJoy.GetRawButton(1) && !clawLatch) {
+			if((liftJoy.GetRawButton(1) || rJoy.GetRawButton(1) || lJoy.GetRawButton(1)) && !clawLatch) {
 				claw.Set(!claw.Get());
 				clawLatch = true;
-			} else if(!liftJoy.GetRawButton(1) && clawLatch) {
+			} else if(!(liftJoy.GetRawButton(1) || rJoy.GetRawButton(1) || lJoy.GetRawButton(1)) && clawLatch) {
 				clawLatch = false;
 			}
 			if(liftJoy.GetRawButton(3)) {
