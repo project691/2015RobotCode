@@ -206,7 +206,7 @@ public:
 				rawDrive.MecanumDrive_Cartesian(right, forward, clockwise);
 			}
 
-			if((!useLiftEncoder && fabs(liftJoy.GetRawAxis(1)) < 0.2) || (liftUpperLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) < 0.0) || (liftLowerLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) > 0.0)) {
+			if(!(rJoy.GetRawButton(3) || lJoy.GetRawButton(3) || rJoy.GetRawButton(2) || lJoy.GetRawButton(2)) && ((!useLiftEncoder && fabs(liftJoy.GetRawAxis(1)) < 0.2) || (liftUpperLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) < 0.0) || (liftLowerLimit.GetVoltage() >= 4.5 && liftJoy.GetRawAxis(1) > 0.0))) {
 				if(useLiftEncoder) {
 					lift.run(0.0);
 				} else {
@@ -214,14 +214,20 @@ public:
 				}
 			} else {
 				if(useLiftEncoder) {
-					if(liftJoy.GetRawButton(4)) {
+					if(liftJoy.GetRawButton(4) || rJoy.GetRawButton(4) || lJoy.GetRawButton(4)) {
 						lift.run(liftEnc.GetDistance() + 500.0);
-					} else if(liftJoy.GetRawButton(5)) {
+					} else if(liftJoy.GetRawButton(5) || rJoy.GetRawButton(5) || lJoy.GetRawButton(5)) {
 						lift.run(liftEnc.GetDistance() - 500.0);
 					}
 					lift.run();
 				} else {
-					liftMotor.Set(-liftJoy.GetRawAxis(1) * fabs(liftJoy.GetRawAxis(1)) * fabs(liftJoy.GetRawAxis(1)));
+					if(rJoy.GetRawButton(3) || lJoy.GetRawButton(3)) {
+						liftMotor.Set(0.5);
+					} else if(rJoy.GetRawButton(2) || lJoy.GetRawButton(2)) {
+						liftMotor.Set(-0.5);
+					} else {
+						liftMotor.Set(-liftJoy.GetRawAxis(1) * fabs(liftJoy.GetRawAxis(1)) * fabs(liftJoy.GetRawAxis(1)));
+					}
 				}
 			}
 			if((liftJoy.GetRawButton(1) || rJoy.GetRawButton(1) || lJoy.GetRawButton(1)) && !clawLatch) {
