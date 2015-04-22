@@ -45,7 +45,9 @@ private:
 	bool useLiftEncoder;
 
 	Solenoid claw;
+	Solenoid topClaw;
 	bool clawLatch;
+	bool topClawLatch;
 	Talon scythe;
 
 	bool setup;
@@ -84,7 +86,9 @@ public:
 			 liftLowerLimit(LIFT_LOWER_LIMIT),
 			 useLiftEncoder(false),
 			 claw(CLAW_SOLENOID),
+			 topClaw(TOP_CLAW_SOLENOID),
 			 clawLatch(false),
+			 topClawLatch(false),
 			 scythe(SCYTHE_TALON),
 			 setup(true),
 			 move(false),
@@ -235,6 +239,12 @@ public:
 				clawLatch = true;
 			} else if(!(liftJoy.GetRawButton(1) || rJoy.GetRawButton(1) || lJoy.GetRawButton(1)) && clawLatch) {
 				clawLatch = false;
+			}
+			if((liftJoy.GetRawButton(3) || rJoy.GetRawButton(4) || lJoy.GetRawButton(4) || rJoy.GetRawButton(5) || lJoy.GetRawButton(5)) && !topClawLatch) {
+				topClaw.Set(!topClaw.Get());
+				topClawLatch = true;
+			} else if(!(liftJoy.GetRawButton(3) || rJoy.GetRawButton(4) || lJoy.GetRawButton(4) || rJoy.GetRawButton(5) || lJoy.GetRawButton(5)) && topClawLatch) {
+				topClawLatch = false;
 			}
 			if(liftJoy.GetRawButton(3)) {
 				scythe.Set(0.4);

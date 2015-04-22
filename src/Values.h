@@ -56,6 +56,7 @@
 	const double LIFT_PID[5] = {LIFT_PID_KP, LIFT_PID_KI, LIFT_PID_KD, LIFT_PID_KF, LIFT_PID_SCALAR};
 
 	const int CLAW_SOLENOID = 0;
+	const int TOP_CLAW_SOLENOID = 1;
 
 	const int SCYTHE_TALON = 5;
 
